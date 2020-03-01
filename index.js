@@ -1,8 +1,116 @@
+//L'HEBERGEUR SE RESERVE LE DROIT D'INTERVERIR SUR VOTRE BOT SI CELUI SI NE REPSECT PAS LES REGLES ETABLIS SUR LE SERVEUR.
+//L'HEBERGEUR SE DEGAGE DE TOUTE RESPONCABILITEE EN CAS DE DESTRUICTION DE SERVEUR SUITE A LA PERTE DE CE DOCUMENT.
+//MERCI DE NE PAS MODIFIER LA CONDITION
+//MERCI DE NA PAS DIVULGER SE CODE OU DES POURSUITE JUDICIARE + ARRET DU BOT ET SUPPRESSION DU BOT POURRAIS ÊTRE EFFECTUER
+//KYLLIS-NET SE DEGAGE DE TOUTE RESPONCABILITE SI UNE COMMANDE MODIFIER PAR VOS SOIN NE FONCTIONNE PAS.
+// CORDIALEMENT KYLLIAN / CEO DE KYLLIS-NET
+
 const Discord = require("discord.js");
 const client = new Discord.Client();
+
 var prefix = "/";
 
-client.login("NjYzMzAzNTgyMDc4MjA1OTY0.XlvLXQ.u6MsRISjH3aiM5NJQMd4HcMTCms");
+client.login("NjYzMzAzNTgyMDc4MjA1OTY0.XlvLXQ.u6MsRISjH3aiM5NJQMd4HcMTCms");// L'HEBERGEUR SE GARDE LE DROIT DE NE PAS DEVOILER LE TOKEN//
+
+var jeuxs = [
+	`/help pour les commandes`,
+    `Hébergé par www.kyllis-net.com`,
+`websitemaker.fr`];//CONDITION A RESPECTER POUR UN BOT GRATUI//
+
+  setInterval(function(){
+
+	var jeux = jeuxs[Math.floor(Math.random()*jeuxs.length)];
+
+	client.user.setPresence({ 
+	  game:{ 
+		name: jeux, 
+		type: 0
+	  } 
+	});
+}, 5000);
+
+
+if(message.content === prefix + "ticket") {
+    //Si le role Modo n'est pas crée alors on annule
+    if (!message.guild.roles.exists("name", "{🔰} 𝐀𝐬𝐬𝐢𝐬𝐭𝐚𝐧𝐭")) return message.channel.send(`Ce Serveur n'a pas de Role \`{🔰} 𝐀𝐬𝐬𝐢𝐬𝐭𝐚𝐧𝐭\`, il faut le créer sinon le ticket ne peut etre ouvert.`);
+    //Si le channel existe déjà on annule
+    if (message.guild.channels.exists("name", "help-" + message.author.username.toLowerCase())) return message.channel.send(`Tu as déjà un ticket ouvert`);
+    //On crée le salon "help-user"
+    message.guild.createChannel(`help-${message.author.username.toLowerCase()}`, "text").then(c => {
+        //On cherche la catégorie pour y placer le salon
+        let category = message.guild.channels.find(c => c.name == "ouverture-tickets" && c.type == "category")
+        c.setParent(category.id)
+        //Recuperation des roles
+        let notAllowed = message.guild.roles.find("name", "@everyone");
+        let role1 = message.guild.roles.find("name", "{👑} 𝐅𝐨𝐧𝐝𝐚𝐭𝐞𝐮𝐫");
+        let role2 = message.guild.roles.find("name", "{⚜️} 𝐑𝐞𝐬𝐩 𝐒𝐭𝐚𝐟𝐟");
+        let role3 = message.guild.roles.find("name", "{✨} 𝐌𝐨𝐝𝐞𝐫𝐚𝐭𝐞𝐮𝐫");
+        let role4 = message.guild.roles.find("name", "{🔰} 𝐀𝐬𝐬𝐢𝐬𝐭𝐚𝐧𝐭");
+        let role5 = message.guild.roles.find("name", "{👨‍💼} 𝐀𝐠𝐞𝐧𝐭");
+        //Personne ne peut lire ou écrire sauf Modo et l'autheur du msg
+        c.overwritePermissions(notAllowed, {
+            SEND_MESSAGES: false,
+            READ_MESSAGES: false
+        });
+        //L'auteur peut écrire et lire
+        c.overwritePermissions(message.author, {
+            SEND_MESSAGES: true,
+            READ_MESSAGES: true
+        });
+        //Les Modos peuvent écrire et lire
+        c.overwritePermissions(role1, {
+            SEND_MESSAGES: true,
+            READ_MESSAGES: true
+        });
+        //Les Modos peuvent écrire et lire
+        c.overwritePermissions(role2, {
+            SEND_MESSAGES: true,
+            READ_MESSAGES: true
+        });
+        //Les Modos peuvent écrire et lire
+        c.overwritePermissions(role3, {
+            SEND_MESSAGES: true,
+            READ_MESSAGES: true
+        });
+        //Les Modos peuvent écrire et lire
+        c.overwritePermissions(role4, {
+            SEND_MESSAGES: true,
+            READ_MESSAGES: true
+        });
+        //Les Modos peuvent écrire et lire
+        c.overwritePermissions(role5, {
+            SEND_MESSAGES: true,
+            READ_MESSAGES: true
+        });
+        //Envoie d'un mp à l'auteur pour indiquer qu'un salon est crée
+        message.member.sendMessage(`${message.author.username}, ton ticket vient d'être crée, <#${c.id}>.`);
+        const embed = new Discord.RichEmbed()
+            .setColor('#0e0e6d')
+            .addField(`Hey ${message.author.username}, quand tu as fini, clique sur la réaction !`, `✅`)
+            .setTimestamp();
+        //On envoie l'embed
+        c.send({
+            embed: embed
+        }).then (function (message){
+            //On ajoute la reaction qui va fermer le ticket
+            message.react('✅')
+      //On regarde si l'utilisateur clique sur la reaction pour fermer le salon
+      client.on('messageReactionAdd', (reaction, user) => {
+
+      if(reaction.emoji.name === "✅" && user.id !== client.user.id) {
+        c.delete()
+        console.log("Delete salon")
+      
+    };
+         });
+        });
+    
+
+        
+    }).catch(console.error); // Send errors to console
+
+};
+
 
 client.on("guildMemberAdd", user =>{
     let join = new Discord.RichEmbed()
@@ -31,6 +139,8 @@ client.on("message", message => {
             .addField('__👑 /staff:__ ', ' pour voire la liste de la direction de web site maker', true)
             .addBlankField()
             .addField('__:no_entry: /bug + mentioner une personne du staff + dire le bug __', ' pour annocer un Bug au staff', true)
+            .addBlankField()
+            .addField('__:frame_photo: /avatar__',  " pour voir l'avatar d'une personne", true)
             .addBlankField()
             .setFooter('Website Maker Bot', 'https://cdn.discordapp.com/attachments/522091414696230912/663052141446955019/Web.png');
 
@@ -146,6 +256,11 @@ client.on("message", message => {
         message.guild.members.map(m => m.send(mpall))
     }
 
+    if(message.content === prefix + "avatar"){
+        message.reply(message.author.avatarURL);
+        message.delete()
+    } 
+
     if (message.content.startsWith(prefix + "mute")) {
         if (!message.member.hasPermission('MANAGE_MESSAGES')) return message.channel.send("❌ Vous n'avez pas la permission d'utiliser cette commande")
         let member = message.mentions.members.first()
@@ -180,6 +295,8 @@ client.on("message", message => {
         if(muterole && member.roles.has(muterole.id)) member.removeRole(muterole)
         message.channel.send(member + ' a été unmute :white_check_mark:')
     }
+
+
 
 });
 
@@ -227,11 +344,7 @@ client.on('message', function (message) {
 
 client.on("message", message => {
     if (!message.guild) return
-
-    if (message.content === prefix + "") {
-        message.channel.send("This is the end, thank you.");
-    }
-    if (message.content.indexOf("fuck") >=0 || message.content.indexOf("putin") >=0 || message.content.indexOf("pute") >=0 || message.content.indexOf("ptn") >=0) {
+    if (message.content.indexOf("fuck") >=0 || message.content.indexOf("putin") >=0 || message.content.indexOf("pute") >=0 || message.content.indexOf("ptn") >=0 || message.content.indexOf("Putin") >=0 || message.content.indexOf("tg") >=0 || message.content.indexOf("Tg") >=0 || message.content.indexOf("TG") >=0) {
         //message.channel.send(mytext);
         //message.channel.send("Length: " + mytext.length);
         //message.channel.send("Substring at position 8 and length 6: " + mytext.substr(8,6));
@@ -239,3 +352,23 @@ client.on("message", message => {
         message.delete();
     }
 });
+
+client.on("message", function (message) {
+    if (message.content.startsWith(prefix + "sondage")){
+        var ar = message.content.split(" ").slice(1);
+        var msge = ar.join(' ');
+        var embed = new Discord.RichEmbed()
+            .setDescription("Sondage")
+            .addField("Répondre avec :white_check_mark: ou :x:", msge)
+            .setColor("0xB40404")
+            .setTimestamp()
+        message.guild.channels.find("name", "test-du-bot-websitemaker").sendEmbed(embed)
+        .then(function (message) {
+            message.react("❌")
+            message.react("✅")
+        }).catch(function(){
+        });
+        message.delete();
+    }
+});
+
