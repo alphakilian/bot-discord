@@ -76,7 +76,7 @@ client.on("message", message => {
                 clearInterval(timer);
                 number = 3;
                 imageNumber = Math.floor (Math.random() * (number - 1 + 1)) + 1;
-                message.channel.send ( {files: ["./img/" + imageNumber + ".png"]})
+                message.channel.send ( {files: [imageNumber + ".png"]})
                 var perdu = new Discord.RichEmbed()
                     .setColor('#DF2828')
                     .setTitle('__**Jeux Pierrs feuil cisaux :**__')
